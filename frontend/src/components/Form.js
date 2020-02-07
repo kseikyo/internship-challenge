@@ -22,7 +22,7 @@ export default class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cities: [],
+      rendered: [],
       loaded: false,
       formControls: {
         name: 'Jane doe',
@@ -36,28 +36,29 @@ export default class Form extends Component {
     }
     this.citiesFilter = citiesFilter.bind(this);
     this.statesFilter = statesFilter.bind(this);
-    // this.updateCities = this.updateCities.bind(this);  
   }
 
   componentDidMount() {
     this.setState({
-      cities: cities,
+      rendered: cities,
       loaded: true
-    })
+    });
   }
 
 
-   async updateCities(event)  {
+  async updateCities(event) {
     const value = event.target.value;
     await this.statesFilter(states, value);
-    await this.citiesFilter(this.state.cities, this.state.formControls.state);
+    await this.citiesFilter(cities, this.state.formControls.state);
   }
 
 
   render() {
-    if(!this.state.loaded) {
+
+    if (!this.state.loaded) {
       return (<div>Loading</div>)
     }
+
     const handleChange = changeHandler.bind(this);
     const updateCities = this.updateCities.bind(this);
     const { formControls } = this.state;
@@ -81,8 +82,9 @@ export default class Form extends Component {
           />
           <Grid item xs={12} sm={6}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <FormControl required>
+              <FormControl variant="outlined" required>
                 <KeyboardDatePicker
+                  
                   required={true}
                   id="date-picker-dialog"
                   label="Birthdate"
@@ -116,7 +118,7 @@ export default class Form extends Component {
           <Select
             label="City"
             onChange={handleChange}
-            options={this.state.cities}
+            options={this.state.rendered}
             inputProps={{
               name: 'city',
               id: 'city-native'
@@ -129,6 +131,9 @@ export default class Form extends Component {
             id="github"
             name="github"
           />
+          <Grid item xs={12} sm={12}>
+            <Button variant="outlined" type="submit">Save</Button>
+          </Grid>
         </Grid>
       </form>
     );

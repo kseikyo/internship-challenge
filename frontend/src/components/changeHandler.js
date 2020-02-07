@@ -16,7 +16,6 @@ export function changeHandler(event, callback = null) {
         [name]: value
       }
     }, () => {
-      console.log(this.state.formControls);
       if (callback) {
         callback();
       }
