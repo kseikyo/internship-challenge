@@ -1,93 +1,136 @@
-import React, { useState } from 'react';
-import { TextField, Button, FormControl, Input, InputLabel, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import cities from '../assets/Cidades.json';
+import states from '../assets/Estados.json';
+import React, { Component } from 'react';
+import DateFnsUtils from '@date-io/date-fns';
+import Select from './Select';
+import Input from './Input';
+import { citiesFilter } from './citiesFilter';
+import { changeHandler } from './changeHandler';
+import { statesFilter } from './statesFilter';
+import {
+  Button,
+  FormControl,
+  Grid
+} from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
 
-export default function Form() {
 
-  const [name, setName] = useState('Jane doe');
-  const [email, setEmail] = useState('janedoe@email.com');
-  const [github, setGithub] = useState('github.com/Janedoe');
-  const [birthdate, setBirthdate] = useState(new Date());
-  const [cpf, setCpf] = useState('');
-  const [city, setCity] = useState('Curitiba');
-  const [state, setState] = useState('Paraná');
-
-  const useStyles = makeStyles(theme => ({
-    root: {
-      flexGrow: 1
-    },
-    inputField: {
-      width: '20rem'
-    },
-  }));
-
-  const classes = useStyles();
-
-  const handleChange = event => {
-    // Event may be null due to deleting all characters on date picker
-    if(!event) return;
-    
-    if (!event.target) setBirthdate(event);
-    else {
-
-      const name = event.target.name;
-      const value = event.target.value;
-
-      if (name === "name") setName(value);
-      else if (name === "email") setEmail(value);
-      else if (name === "github") setGithub(value);
-      else if (name === "city") setCity(value);
-      else if (name === "state") setState(value);
-      else if (name === "cpf") {
-        const new_value = value.replace(/^([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}?[0-9]{2})$/);
-        setCpf(new_value);
+export default class Form extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      cities: [],
+      loaded: false,
+      formControls: {
+        name: 'Jane doe',
+        email: 'janedoe@email.com',
+        github: 'github.com/Janedoe',
+        birthdate: new Date(),
+        cpf: '',
+        city: '',
+        state: '',
       }
     }
+    this.citiesFilter = citiesFilter.bind(this);
+    this.statesFilter = statesFilter.bind(this);
+    // this.updateCities = this.updateCities.bind(this);  
   }
 
-  return (
-    <form className={classes.root} noValidate autoComplete="off">
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <FormControl className={classes.inputField}>
-            <InputLabel htmlFor="component-simple">Full name</InputLabel>
-            <Input id="name" name="name" value={name} onChange={handleChange} />
-          </FormControl>
+  componentDidMount() {
+    this.setState({
+      cities: cities,
+      loaded: true
+    })
+  }
+
+
+   async updateCities(event)  {
+    const value = event.target.value;
+    await this.statesFilter(states, value);
+    await this.citiesFilter(this.state.cities, this.state.formControls.state);
+  }
+
+
+  render() {
+    if(!this.state.loaded) {
+      return (<div>Loading</div>)
+    }
+    const handleChange = changeHandler.bind(this);
+    const updateCities = this.updateCities.bind(this);
+    const { formControls } = this.state;
+
+    return (
+      <form style={{ flexGrow: 1 }} noValidate autoComplete="off">
+        <Grid container spacing={4}>
+          <Input
+            label="Full name"
+            formControls={formControls.name}
+            handleChange={handleChange}
+            id="name"
+            name="name"
+          />
+          <Input
+            label="Email"
+            formControls={formControls.email}
+            handleChange={handleChange}
+            id="email"
+            name="email"
+          />
+          <Grid item xs={12} sm={6}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <FormControl required>
+                <KeyboardDatePicker
+                  required={true}
+                  id="date-picker-dialog"
+                  label="Birthdate"
+                  format="MM/dd/yyyy"
+                  value={formControls.birthdate}
+                  onChange={handleChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </FormControl>
+            </MuiPickersUtilsProvider>
+          </Grid>
+          <Input
+            label="Individual Registry (CPF)"
+            formControls={formControls.cpf}
+            handleChange={handleChange}
+            type="number"
+            id="cpf"
+            name="cpf"
+          />
+          <Select
+            label="State"
+            onChange={updateCities}
+            options={states}
+            inputProps={{
+              name: 'state',
+              id: 'state-native'
+            }}
+          />
+          <Select
+            label="City"
+            onChange={handleChange}
+            options={this.state.cities}
+            inputProps={{
+              name: 'city',
+              id: 'city-native'
+            }}
+          />
+          <Input
+            label="Github URL"
+            formControls={formControls.github}
+            handleChange={handleChange}
+            id="github"
+            name="github"
+          />
         </Grid>
-        <Grid item xs={6}>
-          <FormControl className={classes.inputField}>
-            <InputLabel htmlFor="component-simple">Email</InputLabel>
-            <Input id="email" name="email" type="email" value={email} onChange={handleChange} />
-          </FormControl>
-        </Grid>
-        <Grid item xs={6}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              className={classes.inputField}
-              margin="normal"
-              id="date-picker-dialog"
-              label="Birthdate"
-              format="MM/dd/yyyy"
-              value={birthdate}
-              onChange={handleChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-            />
-          </MuiPickersUtilsProvider>
-        </Grid>
-        <Grid item xs={6}>
-          <FormControl className={classes.inputField}>
-            <InputLabel htmlFor="component-simple">Individual Registry (CPF)</InputLabel>
-            <Input id="cpf" name="cpf" type="number" value={cpf} onChange={handleChange} />
-          </FormControl>
-        </Grid>
-      </Grid>
-    </form>
-  );
+      </form>
+    );
+  }
 }
