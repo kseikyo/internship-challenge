@@ -9,7 +9,7 @@ class User extends Model {
       city: DataTypes.STRING,
       state: DataTypes.STRING,
       github: DataTypes.STRING,
-      birthday: DataTypes.DATE,
+      birthdate: DataTypes.DATE,
     }, {
       sequelize
     });
