@@ -1,10 +1,10 @@
 export function changeHandler(event, callback = null) {
   if (!event) return;
-  else if (!event.target.name) {
+  else if (!event.target) {
     this.setState({
       formControls: {
         ...this.state.formControls,
-        birthdate: event
+        birthdate: event.toISOString()
       }
     })
   } else {

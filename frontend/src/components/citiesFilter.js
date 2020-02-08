@@ -1,4 +1,5 @@
 export function citiesFilter(array, value, callback) {
+  if(!value) return;
   const arr = array.filter((object) => {
       return object.Estado === value.ID ? object : null
   });
