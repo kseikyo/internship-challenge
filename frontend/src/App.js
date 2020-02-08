@@ -5,19 +5,18 @@ import Tab from './components/Tab';
 
 function App() {
   const form_style = {
-    display: 'flex',
     boxShadow: '5px 5px 35px 2px #212121',
     padding: '3.5rem',
-    borderRadius: '5px'
+    borderRadius: '5px',
     //#98989fff
   }
 
   const container_style = {
     display: 'flex',
-    width: '75vw',
+    width: '90vw',
     height: '50vh',
-    padding: '5rem',
-    marginLeft: '10rem',
+    marginTop: '10em',
+    marginLeft: '5em',
     placeContent: 'center',
     alignItems: 'center'
   }
@@ -31,7 +30,7 @@ function App() {
     <>
       <Tab value={page} handleChange={handleChange}/>
       <div style={container_style}>
-        <Container style={form_style} fixed>
+        <Container style={form_style} maxWidth="lg" >
           {!page ?
             <Form /> 
             : null
