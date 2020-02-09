@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Container from '@material-ui/core/Container';
-import Form from './components/Form';
-import Tab from './components/Tab';
+import Form from './components/forms/Form';
+import Tab from './components/misc/Tab';
+import Table from './components/registrations/Table';
 
 function App() {
   const form_style = {
     boxShadow: '5px 5px 35px 2px #212121',
-    padding: '3.5rem',
-    borderRadius: '5px',
-    //#98989fff
+    padding: '2.5rem',
+    borderRadius: '15px',
   }
 
   const container_style = {
@@ -33,7 +33,7 @@ function App() {
         <Container style={form_style} maxWidth="lg" >
           {!page ?
             <Form /> 
-            : null
+            : <Table />
           }
         </Container>
       </div>
